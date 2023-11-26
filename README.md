@@ -1,6 +1,8 @@
-# SDK
-The andriod aar Sdk support Vimu MSO Series Oscilloscopes. The SDK support MSO10，MSO20 and MSO21 oscilloscopes.
+The Andriod SDK supports direct connection to MSO oscilloscopes via USB on the Andriod system, and the MSO oscilloscope is part of its new products to accelerate the development of new products.
 
-######################demo######################
-	Test platform: andriod 5.0; andriod 10.0; andriod 11.0; andriod 13.0
+The supported device can be a mobile phone, pad or industrial computer;
+
+The SDK provides a wealth of APIs, and currently supports the control of oscilloscopes and DDS signal sources.
+
+Test platform: andriod 5.0; andriod 10.0; andriod 11.0; andriod 13.0
 
