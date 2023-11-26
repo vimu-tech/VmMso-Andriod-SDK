@@ -1,0 +1,96 @@
+<resources>
+    <string name="app_name">AarDemo</string>
+    <string name="PleaseConnectUsb">Please connect usb device...</string>
+
+    <string name="The_Device_Need_Permission">USB设备访问权限不足,请授权!\n如果已经授权，请重新拔插USB.</string>
+    <string name="The_Device_Add">USB设备插入.</string>
+    <string name="The_Device_Remove">USB设备插出.</string>
+
+    <string name="DDS">DDS</string>
+    <string name="DDS_Mode">DDS 模式</string>
+    <string-array name="DDS_Mode_Strings">
+        <item>连续</item>
+        <!--<item>扫频</item>-->
+        <!--<item>突发</item>-->
+    </string-array>
+    <string name="Wave">波形</string>
+    <string name="Sine">正弦波</string>
+    <string name="Rectangle">矩形</string>
+    <string name="Pulse">脉冲</string>
+    <string name="White_Noise">白噪声</string>
+    <string name="Ramp">锯齿</string>
+    <string name="DC">DC</string>
+    <string name="Arb">任意</string>
+
+    <string name="Amplitude">幅值</string>
+    <string name="Bias">偏置</string>
+    <string name="Freq">频率</string>
+
+    <string name="Capture">采集</string>
+    <string name="Samples">采样率</string>
+    <string name="LengthK">长度(K)</string>
+    <string name="RangeMin">采集最小值</string>
+    <string name="RangeMax">采集最大值</string>
+
+    <string name="CaptureCompleteReadDatas">采集完成，读取数据</string>
+
+    <string name="Trigger">触发</string>
+    <string name="Trigger_Mode">触发模式</string>
+    <string-array name="Trigger_Mode_Strings">
+        <item>自动</item>
+        <item>正常</item>
+        <!--<item>单次</item>-->
+    </string-array>
+    <string name="Trigger_Source">触发源</string>
+    <string-array name="Trigger_Source_Strings">
+        <item>CH1</item>
+        <item>CH2</item>
+        <item>D0</item>
+        <item>D1</item>
+        <item>D2</item>
+        <item>D3</item>
+        <item>D4</item>
+        <item>D5</item>
+        <item>D6</item>
+        <item>D7</item>
+    </string-array>
+    <string name="Trigger_Style">触发类型</string>
+    <string-array name="Trigger_Style_Strings">
+        <item>不触发</item>
+        <item>上升沿</item>
+        <item>下降沿</item>
+        <item>上升/下降沿</item>
+        <item>正脉宽(&#62;)</item>
+        <item>正脉宽(&#60;)</item>
+        <item>正脉宽(&#60;&#62;)</item>
+        <item>负脉宽((&#62;)</item>
+        <item>负脉宽(&#60;)</item>
+        <item>负脉宽(&#60;&#62;)</item>
+    </string-array>
+    <string name="Trigger_Level">触发电平</string>
+    <string name="Pulse_Up">脉宽上限</string>
+    <string name="Pulse_Down">脉宽下限</string>
+    <string name="Trigger_Sensitivity">触发灵敏度(0&#8211;1.0)</string>
+    <string-array name="Trigger_Sensitivity_Strings">
+        <item>0.1</item>
+        <item>0.2</item>
+        <item>0.3</item>
+        <item>0.4</item>
+        <item>0.5</item>
+        <item>0.6</item>
+        <item>0.7</item>
+        <item>0.8</item>
+        <item>0.9</item>
+        <item>1.0</item>
+    </string-array>
+    <string name="Div">div</string>
+    <string name="Trigger_Front_Percent">预触发比例(1&#8211;99)</string>
+    <string name="Percent">%</string>
+
+    <string name="Auto">自动</string>
+    <string name="Run">运行</string>
+    <string name="Stop">停止</string>
+    <string name="Wait">等待</string>
+
+    <string name="Normal">正常</string>
+</resources>
