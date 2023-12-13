@@ -94,4 +94,6 @@
 
     <string name="Normal">Normal</string>
     <string name="Single">Single</string>
+
+    <string name="TriggerFroce">Trigger Force</string>
 </resources>

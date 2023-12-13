@@ -93,4 +93,6 @@
     <string name="Wait">等待</string>
 
     <string name="Normal">正常</string>
+
+    <string name="TriggerFroce">强制触发</string>
 </resources>

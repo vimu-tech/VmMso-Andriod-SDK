@@ -179,6 +179,12 @@ public class MainActivity extends AppCompatActivity
         mTriggerFrontPercentEditText.setValue(50);
         mTriggerFrontPercentEditText.setOnEditTextRangeActionListener(editorRangeActionListener);
 
+        Button mTriggerForce = findViewById(R.id.osc_trigger_force);
+        mTriggerForce.setOnClickListener((l)->{
+            if(cardWave!=null)
+                cardWave.SetTriggerForce();
+        });
+
 
         AddInfo(R.string.PleaseConnectUsb);
 
@@ -211,7 +217,6 @@ public class MainActivity extends AppCompatActivity
             assert dev != null;
             cardWave = OscDdsFactory.CreateSbqCardWave(this, dev);
             if (dev.IsSupportHsf()) {
-                 assert (ddsWave == null);
                 ddsWave = OscDdsFactory.CreateDDSWave(dev);
             }
 
@@ -369,16 +374,14 @@ public class MainActivity extends AppCompatActivity
             cardWave.Stop();
     }
 
-    public boolean WaveReceiveCallBack(boolean success, int length){
+    public boolean WaveReceiveCallBack(BasicSbqUsbCardVer12.WaveReceiveLister.WaveReceiveType type, boolean success, int length){
 
         if(success) {
             //更新UI
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    WaveReceive(length);
-                }
-            });
+            if(type == WaveReceiveType.Datas)
+                runOnUiThread(() -> WaveReceive(length));
+            else
+                runOnUiThread(() -> TriggerUpdate());
         }
         return true;
     }
@@ -393,6 +396,16 @@ public class MainActivity extends AppCompatActivity
             m_read_length = cardWave.Capture(m_capture_length / 1024, (short)0x03, (byte) 0);
             m_read_length *= 1024;  //转换成长度
         }
+    }
+
+    void TriggerUpdate()
+    {
+        if(++m_count > 15)
+        {
+            m_count = 0;
+            mUsbInfos = "";
+        }
+        AddInfo("Trigger Update\n");
     }
 
     int m_count = 0;
