@@ -378,10 +378,23 @@ public class MainActivity extends AppCompatActivity
 
         if(success) {
             //更新UI
-            if(type == WaveReceiveType.Datas)
-                runOnUiThread(() -> WaveReceive(length));
+            if(type == WaveReceiveType.Datas) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        WaveReceive(length);
+                    }
+                });
+            }
             else
-                runOnUiThread(() -> TriggerUpdate());
+            {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TriggerUpdate();
+                    }
+                });
+            }
         }
         return true;
     }
@@ -417,7 +430,8 @@ public class MainActivity extends AppCompatActivity
         {
             Resources mResources = getResources();
             int m_length = cardWave.ReadVoltageDatas((byte)0, m_buffer, m_read_length);
-            AddInfo(String.format("%s %d\n", mResources.getString(R.string.CaptureCompleteReadDatas), m_length));
+            int m_trigger_point = cardWave.ReadVoltageDatasTriggerPoint();
+            AddInfo(String.format("%s Length %d TrigggerPoint %d\n", mResources.getString(R.string.CaptureCompleteReadDatas), m_length, m_trigger_point));
 
             double min, max;
             min = max = m_buffer[0];
@@ -432,7 +446,7 @@ public class MainActivity extends AppCompatActivity
                 m_count = 0;
                 mUsbInfos = "";
             }
-            String tmp = String.format("min = %.3f max = %.3f\n",min,max);
+            String tmp = String.format("min = %.3f max = %.3f vpp = %.3f\n",min,max, max-min);
             AddInfo(tmp);
 
             //采集
@@ -638,7 +652,7 @@ public class MainActivity extends AppCompatActivity
             else if (id == R.id.dds_freq_Number) {
                 Log.d(TAG, "dds_freq_Number " + value);
                 if (ddsWave != null)
-                    ddsWave.SetPinlv(0, value);
+                    ddsWave.SetFreq(0, value);
             }
             else if (id == R.id.osc_range_minmv) {
                 Log.d(TAG, "osc_range_minmv " + value);

@@ -150,13 +150,19 @@ public class EditTextRange extends AppCompatEditText {
             StringBuffer strbuf = new StringBuffer(dest.toString());
             strbuf.insert(dstart, source.toString());
             //Log.i(TAG, "StringBuffer " + strbuf);
-            double input = Double.parseDouble(strbuf.toString());
-            if (isInRange(min, max, input)) {
-                //Log.i(TAG, "filter " + input +" null");
-                return null;
+            try {
+                double input = Double.parseDouble(strbuf.toString());
+                if (isInRange(min, max, input)) {
+                    //XLog.d(TAG + " 0 ...filter");
+                    return null;
+                } else {
+                    //XLog.d(TAG + " 1 ...filter");
+                    return "";
+                }
+            } catch (NumberFormatException e) {
+                //XLog.d(TAG + "e ...filter");
+                return "";
             }
-            //Log.i(TAG, "filter " + "end");
-            return "";
         }
 
         private boolean isInRange(double a, double b, double c) {

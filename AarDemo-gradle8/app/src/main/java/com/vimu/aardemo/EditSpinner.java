@@ -191,18 +191,19 @@ abstract public class EditSpinner extends LinearLayout {
             StringBuffer strBuf = new StringBuffer(dest.toString());
             strBuf.insert(dStart, source);
             //Log.d(TAG, "StringBuffer " + strBuf);
-            double input = Double.parseDouble(strBuf.toString());
-            //if (isInRange(min, max, input)) {
-                //Log.d(TAG, "filter " + input +" null");
-                //mEditText.setTextColor(mTextColorOld);
-                //return null;
-            //}
-            //else{
-                //mEditText.setTextColor(Color.RED);
-            //}
-            //Log.d(TAG, "filter " + "end");
-            return null;
-            //return "";
+            try {
+                double input = Double.parseDouble(strBuf.toString());
+                if (isInRange(min, max, input)) {
+                    //XLog.d(TAG + " 0 ...filter");
+                    return null;
+                } else {
+                    //XLog.d(TAG + " 1 ...filter");
+                    return "";
+                }
+            } catch (NumberFormatException e) {
+                //XLog.d(TAG + "e ...filter");
+                return "";
+            }
         }
 
         private boolean isInRange(double a, double b, double c) {

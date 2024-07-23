@@ -9,13 +9,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="61f1609a-0f3d-46ed-922c-855149c2b294" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/libs/msolibrary-debug.aar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+    <list default="true" id="f6ed73fc-a559-4af4-984a-cc4b0d840a49" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/app/libs/msolibrary-release.aar" beforeDir="false" afterPath="$PROJECT_DIR$/app/libs/msolibrary-release.aar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/EditSpinner.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/EditSpinner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/EditTextRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/EditTextRange.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,7 +33,7 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="2YGDHJKvLekkMXyCrxXv3LCONSM" />
+  <component name="ProjectId" id="2iOr40kOxXBCdOOmLEsRhRtreO4" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -45,11 +43,6 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
-    "android-custom-viewD:/androidvimu/AarDemo-gradle8/app/src/main/java/com/vimu/aardemo/EditSpinner.java_SELECTED": "EditSpinner",
-    "android-custom-viewD:/androidvimu/AarDemo-gradle8/app/src/main/java/com/vimu/aardemo/EditSpinnerFreq.java_SELECTED": "EditSpinnerFreq",
-    "android-custom-viewD:/androidvimu/AarDemo-gradle8/app/src/main/java/com/vimu/aardemo/EditSpinnerKb.java_SELECTED": "EditSpinnerKb",
-    "android-custom-viewD:/androidvimu/AarDemo-gradle8/app/src/main/java/com/vimu/aardemo/EditSpinnerVolt.java_SELECTED": "EditSpinnerVolt",
-    "android-custom-viewD:/androidvimu/AarDemo-gradle8/app/src/main/java/com/vimu/aardemo/EditTextRange.java_SELECTED": "EditTextRange",
     "cidr.known.project.marker": "true",
     "last_opened_file_path": "D:/androidvimu/MultiVirAnalyzer"
   }
@@ -117,11 +110,11 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="61f1609a-0f3d-46ed-922c-855149c2b294" name="Changes" comment="" />
-      <created>1700142935650</created>
+      <changelist id="f6ed73fc-a559-4af4-984a-cc4b0d840a49" name="Changes" comment="" />
+      <created>1719372270807</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1700142935650</updated>
+      <updated>1719372270807</updated>
     </task>
     <servers />
   </component>
@@ -135,16 +128,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/MainActivity.java</url>
-          <line>547</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
