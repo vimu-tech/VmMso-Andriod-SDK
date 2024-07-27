@@ -6,3 +6,6 @@ The SDK provides a wealth of APIs, and currently supports the control of oscillo
 
 Test platform: andriod 5.0; andriod 10.0; andriod 11.0; andriod 13.0
 
+![AarDemo](https://github.com/user-attachments/assets/7c401303-144d-4ef3-ba49-caba13b8bb11)
+
+
