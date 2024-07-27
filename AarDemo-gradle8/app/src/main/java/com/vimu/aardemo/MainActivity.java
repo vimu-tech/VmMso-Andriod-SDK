@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity
     ArrayAdapter<String> mTriggerStyleAdapter;
     String[] mTriggerStyleStrings = null;
 
+    private ScopeView mScopeView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +64,9 @@ public class MainActivity extends AppCompatActivity
 
         // 获取布局中的控件
         Resources mResources = getResources();
+
+        //
+        mScopeView = findViewById(R.id.scopeView);
 
         //DDS
         Switch mDdsSwitch = findViewById(R.id.dds_switch);
@@ -281,6 +285,11 @@ public class MainActivity extends AppCompatActivity
 
         cardWave.SetRangeV((byte)0, m_osc_range_minv, m_osc_range_maxv);
         cardWave.SetRangeV((byte)1, m_osc_range_minv, m_osc_range_maxv);
+        if(cardWave.GetChannelNum()==4)
+        {
+            cardWave.SetRangeV((byte)2, m_osc_range_minv, m_osc_range_maxv);
+            cardWave.SetRangeV((byte)3, m_osc_range_minv, m_osc_range_maxv);
+        }
 
         //采样率
         int sampleNum = cardWave.GetSamplesNum();
@@ -333,7 +342,7 @@ public class MainActivity extends AppCompatActivity
 
         //内存分配:低版本安卓分配太大内存失败，使用1MB测试    32MB/16==2MB采集
         //The lower version of Android failed to allocate too much memory, and it was collected with 1MB test 32MB/16==2MB
-        m_max_capture_length = m_capture_length = cardWave.GetHardMemoryDepth() / 16;
+        m_max_capture_length = m_capture_length = 1024*1024; //cardWave.GetHardMemoryDepth() / 16;
         mUsbInfos += String.format("Memory alloc %d\n",  m_capture_length);
         m_buffer = new double[m_max_capture_length];
 
@@ -362,6 +371,17 @@ public class MainActivity extends AppCompatActivity
 
             TextView textView = findViewById(R.id.text_info);
             textView.setText(mUsbInfos);
+
+            if(cardWave.GetChannelNum()==4) {
+                mScopeView.AddLine(ComDefs.chn1_name, 2, mResources.getColor(R.color.colorPrintCh1));
+                mScopeView.AddLine(ComDefs.chn2_name, 4, mResources.getColor(R.color.colorPrintCh2));
+                mScopeView.AddLine(ComDefs.chn3_name, 6, mResources.getColor(R.color.colorPrintCh3));
+                mScopeView.AddLine(ComDefs.chn4_name, 8, mResources.getColor(R.color.colorPrintCh4));
+            }
+            else {
+                mScopeView.AddLine(ComDefs.chn1_name, 2.5, mResources.getColor(R.color.colorPrintCh1));
+                mScopeView.AddLine(ComDefs.chn2_name, 7.5, mResources.getColor(R.color.colorPrintCh2));
+            }
          }
     }
 
@@ -405,8 +425,9 @@ public class MainActivity extends AppCompatActivity
         {
             //采集
             //m_capture_length 以KB为单位 1==1024 10=10240
-            //ch1==0x01 ch2==0x02 ch1+ch2==0x03
-            m_read_length = cardWave.Capture(m_capture_length / 1024, (short)0x03, (byte) 0);
+            //ch1==0x01 ch2==0x02 ch1+ch2==0x03 ch1+ch2+ch3==0x07 ch1+ch2+ch3+ch4==0x0F
+            m_read_length = cardWave.Capture(m_capture_length / 1024, (cardWave.GetChannelNum() == 4)? (short)0x0F:(short)0x03, (byte) 0);
+            //m_read_length = cardWave.Capture(m_capture_length / 1024,(short)0x07, (byte) 0);
             m_read_length *= 1024;  //转换成长度
         }
     }
@@ -429,25 +450,38 @@ public class MainActivity extends AppCompatActivity
         if(cardWave!=null)
         {
             Resources mResources = getResources();
-            int m_length = cardWave.ReadVoltageDatas((byte)0, m_buffer, m_read_length);
+
             int m_trigger_point = cardWave.ReadVoltageDatasTriggerPoint();
-            AddInfo(String.format("%s Length %d TrigggerPoint %d\n", mResources.getString(R.string.CaptureCompleteReadDatas), m_length, m_trigger_point));
+            AddInfo(String.format("%s Length %d TrigggerPoint %d\n", mResources.getString(R.string.CaptureCompleteReadDatas), m_read_length, m_trigger_point));
 
-            double min, max;
-            min = max = m_buffer[0];
-            for (int i = 0; i < m_length; i++)
-            {
-                min = Math.min(min, m_buffer[i]);
-                max = Math.max(max, m_buffer[i]);
-            }
+            for(int chn=0; chn < cardWave.GetChannelNum(); chn++) {
+                int m_length = cardWave.ReadVoltageDatas((byte) chn, m_buffer, m_read_length);
 
-            if(++m_count > 15)
-            {
-                m_count = 0;
-                mUsbInfos = "";
+                double min, max;
+                min = max = m_buffer[0];
+                for (int i = 0; i < m_length; i++) {
+                    min = Math.min(min, m_buffer[i]);
+                    max = Math.max(max, m_buffer[i]);
+                }
+
+                if (++m_count > 10) {
+                    m_count = 0;
+                    mUsbInfos = "";
+                }
+                String tmp = String.format("channel %d min = %.3f max = %.3f vpp = %.3f\n", chn, min, max, max - min);
+                AddInfo(tmp);
+
+                if(chn==0)
+                    mScopeView.UpdateDatas(ComDefs.chn1_name, m_buffer, m_length, min, max);
+                else if(chn==1)
+                    mScopeView.UpdateDatas(ComDefs.chn2_name, m_buffer, m_length, min, max);
+                else if(chn==2)
+                    mScopeView.UpdateDatas(ComDefs.chn3_name, m_buffer, m_length, min, max);
+                else if(chn==3)
+                    mScopeView.UpdateDatas(ComDefs.chn4_name, m_buffer, m_length, min, max);
+
+                mScopeView.Redraw();
             }
-            String tmp = String.format("min = %.3f max = %.3f vpp = %.3f\n",min,max, max-min);
-            AddInfo(tmp);
 
             //采集
             if(m_osc_capturing)
@@ -661,6 +695,11 @@ public class MainActivity extends AppCompatActivity
                 {
                     cardWave.SetRangeV((byte)0, m_osc_range_minv, m_osc_range_maxv);
                     cardWave.SetRangeV((byte)1, m_osc_range_minv, m_osc_range_maxv);
+                    if(cardWave.GetChannelNum()==4)
+                    {
+                        cardWave.SetRangeV((byte)2, m_osc_range_minv, m_osc_range_maxv);
+                        cardWave.SetRangeV((byte)3, m_osc_range_minv, m_osc_range_maxv);
+                    }
                 }
             }
             else if (id == R.id.osc_range_maxmv) {
@@ -670,6 +709,11 @@ public class MainActivity extends AppCompatActivity
                 {
                     cardWave.SetRangeV((byte)0, m_osc_range_minv, m_osc_range_maxv);
                     cardWave.SetRangeV((byte)1, m_osc_range_minv, m_osc_range_maxv);
+                    if(cardWave.GetChannelNum()==4)
+                    {
+                        cardWave.SetRangeV((byte)2, m_osc_range_minv, m_osc_range_maxv);
+                        cardWave.SetRangeV((byte)3, m_osc_range_minv, m_osc_range_maxv);
+                    }
                 }
             }
             else if (id == R.id.osc_capture_length) {

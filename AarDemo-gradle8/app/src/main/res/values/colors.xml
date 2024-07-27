@@ -2,4 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="colorPlotBack">#2A2F30</color>
+    <color name="colorPlotOutBack">#535353</color>
+    <color name="colorGrid">#209484</color>
+    <color name="colorPrintCh1">#CB0000</color>
+    <color name="colorPrintCh2">#0000FF</color>
+    <color name="colorPrintCh3">#00FFFF</color>
+    <color name="colorPrintCh4">#FF00FF</color>
 </resources>

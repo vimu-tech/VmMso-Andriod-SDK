@@ -2,18 +2,23 @@
 <project version="4">
   <component name="AndroidLayouts">
     <shared>
-      <config />
+      <config>
+        <device id="_device_class_tablet" />
+      </config>
     </shared>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f6ed73fc-a559-4af4-984a-cc4b0d840a49" name="Changes" comment="">
+    <list default="true" id="d84c4730-9b97-4f32-82c3-66c7549d0f94" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/LineInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/libs/msolibrary-release.aar" beforeDir="false" afterPath="$PROJECT_DIR$/app/libs/msolibrary-release.aar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/EditSpinner.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/EditSpinner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/EditTextRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/EditTextRange.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/vimu/aardemo/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -27,26 +32,35 @@
       <ProjectState />
     </projectState>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="2iOr40kOxXBCdOOmLEsRhRtreO4" />
+  <component name="ProjectId" id="2jfncMAcjwYCLOILUXFNw3Xrx47" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "cidr.known.project.marker": "true",
-    "last_opened_file_path": "D:/androidvimu/MultiVirAnalyzer"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;android-custom-viewD:/androidvimu/AarDemo-gradle8/app/src/main/java/com/vimu/aardemo/ScopeView.java_SELECTED&quot;: &quot;ScopeView&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/androidvimu/AarDemo-gradle8&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App">
       <module name="AarDemo.app.main" />
@@ -110,11 +124,11 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="f6ed73fc-a559-4af4-984a-cc4b0d840a49" name="Changes" comment="" />
-      <created>1719372270807</created>
+      <changelist id="d84c4730-9b97-4f32-82c3-66c7549d0f94" name="Changes" comment="" />
+      <created>1721787082294</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1719372270807</updated>
+      <updated>1721787082294</updated>
     </task>
     <servers />
   </component>
