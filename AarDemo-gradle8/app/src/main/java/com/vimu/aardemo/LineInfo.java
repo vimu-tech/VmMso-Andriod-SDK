@@ -68,7 +68,7 @@ public class LineInfo {
             }
         }
 
-        Log.d(TAG, String.format("PixelNum = %d pixe_index = %d ", PixelNum, pixe_index));
+        //Log.d(TAG, String.format("PixelNum = %d pixe_index = %d ", PixelNum, pixe_index));
         return true;
     }
 }

@@ -10,6 +10,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -28,6 +29,8 @@ import com.vimu.msolibrary.usb.UsbDevMng;
 import com.vimu.msolibrary.usb.OscDdsFactory;
 import com.vimu.msolibrary.usb.BasicSbqUsbCardVer12;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity
@@ -382,6 +385,9 @@ public class MainActivity extends AppCompatActivity
                 mScopeView.AddLine(ComDefs.chn1_name, 2.5, mResources.getColor(R.color.colorPrintCh1));
                 mScopeView.AddLine(ComDefs.chn2_name, 7.5, mResources.getColor(R.color.colorPrintCh2));
             }
+
+            //
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
          }
     }
 
@@ -392,6 +398,8 @@ public class MainActivity extends AppCompatActivity
 
         if(cardWave!=null)
             cardWave.Stop();
+
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     public boolean WaveReceiveCallBack(BasicSbqUsbCardVer12.WaveReceiveLister.WaveReceiveType type, boolean success, int length){
@@ -421,6 +429,7 @@ public class MainActivity extends AppCompatActivity
 
     void NextCapture()
     {
+        //Log.d(TAG, "NextCapture");
         if(cardWave!=null)
         {
             //采集
@@ -464,9 +473,13 @@ public class MainActivity extends AppCompatActivity
                     max = Math.max(max, m_buffer[i]);
                 }
 
-                if (++m_count > 10) {
-                    m_count = 0;
+                if (++m_count % 10 == 0) {
                     mUsbInfos = "";
+
+                    SimpleDateFormat formatter = new SimpleDateFormat ("yyyy年MM月dd日 HH:mm:ss ");
+                    Date curDate = new Date(System.currentTimeMillis());
+                    String str = formatter.format(curDate);
+                    AddInfo(str + "count " + m_count + "\n");
                 }
                 String tmp = String.format("channel %d min = %.3f max = %.3f vpp = %.3f\n", chn, min, max, max - min);
                 AddInfo(tmp);
