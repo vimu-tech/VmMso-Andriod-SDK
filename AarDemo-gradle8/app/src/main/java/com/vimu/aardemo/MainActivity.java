@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,36 +18,43 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vimu.msolibrary.ComDefs;
+import com.vimu.msolibrary.FreqValue;
+import com.vimu.msolibrary.PhaseValue;
 import com.vimu.msolibrary.usb.BasicHsfUsbWaveV12;
+import com.vimu.msolibrary.usb.BasicMultMeterCtrlUsb;
 import com.vimu.msolibrary.usb.BasicUsbDev;
+import com.vimu.msolibrary.usb.FS9922MultMeterCtrlUsb;
 import com.vimu.msolibrary.usb.UsbDevMng;
 import com.vimu.msolibrary.usb.OscDdsFactory;
 import com.vimu.msolibrary.usb.BasicSbqUsbCardVer12;
+import com.vimu.msolibrary.wave.ParaCal;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity
-        implements UsbDevMng.UsbDevDetectLister, BasicSbqUsbCardVer12.WaveReceiveLister {
+        implements UsbDevMng.UsbDevDetectLister, BasicSbqUsbCardVer12.WaveReceiveLister, BasicMultMeterCtrlUsb.MeterUpdateLister {
 
     private static final String TAG = "MainActivity";
 
     private UsbDevMng usbManger = null;
     private BasicSbqUsbCardVer12 cardWave = null;
     private BasicHsfUsbWaveV12 ddsWave = null;
+    private FS9922MultMeterCtrlUsb meterWave = null;
     private String mUsbInfos = new String();
+
+    private ParaCal pareCal = new ParaCal();
 
     private int m_max_capture_length = 0;
     private int m_capture_length = 0;
-    private double m_buffer[] = null;
+    private double[] m_buffer = null;
 
     private int m_read_length = 0;
 
@@ -60,6 +69,8 @@ public class MainActivity extends AppCompatActivity
     String[] mTriggerStyleStrings = null;
 
     private ScopeView mScopeView;
+    private MeterView mMeterView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +80,7 @@ public class MainActivity extends AppCompatActivity
         Resources mResources = getResources();
 
         //
+        mMeterView = findViewById(R.id.meterView);
         mScopeView = findViewById(R.id.scopeView);
 
         //DDS
@@ -77,7 +89,7 @@ public class MainActivity extends AppCompatActivity
 
         //Mode
         String[] mDdsModeStrings = mResources.getStringArray(R.array.DDS_Mode_Strings);
-        ArrayAdapter<String> mDdsModeAdapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mDdsModeStrings);
+        ArrayAdapter<String> mDdsModeAdapter= new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mDdsModeStrings);
         mDdsModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);     //设置下拉列表框的下拉选项样式
         Spinner modeSpiner = (Spinner) findViewById(R.id.dds_mode_spinner);
         modeSpiner.setAdapter(mDdsModeAdapter);
@@ -93,7 +105,7 @@ public class MainActivity extends AppCompatActivity
         mDdsWaveStrings.add(mResources.getString(R.string.DC));
         //mDdsWaveStrings.add(mResources.getString(R.string.Arb));
 
-        ArrayAdapter<String> mDdsWaveAdapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mDdsWaveStrings);
+        ArrayAdapter<String> mDdsWaveAdapter= new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mDdsWaveStrings);
         mDdsWaveAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);     //设置下拉列表框的下拉选项样式
         Spinner wave = (Spinner) findViewById(R.id.dds_wave_spinner);
         wave.setAdapter(mDdsWaveAdapter);
@@ -145,7 +157,7 @@ public class MainActivity extends AppCompatActivity
 
         //Trigger
         String[] mTriggerModeStrings = mResources.getStringArray(R.array.Trigger_Mode_Strings);
-        mTriggerModeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mTriggerModeStrings);
+        mTriggerModeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mTriggerModeStrings);
         mTriggerModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);     //设置下拉列表框的下拉选项样式
         Spinner mTriggerModeSpinner = findViewById(R.id.trigger_mode_spinner);
         mTriggerModeSpinner.setAdapter(mTriggerModeAdapter);
@@ -153,7 +165,7 @@ public class MainActivity extends AppCompatActivity
         mTriggerModeSpinner.setOnItemSelectedListener(spinnerSelectedListener);
 
         String[] mTriggerSourceStrings = mResources.getStringArray(R.array.Trigger_Source_Strings);
-        ArrayAdapter<String> mTriggerSourceAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mTriggerSourceStrings);
+        ArrayAdapter<String> mTriggerSourceAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mTriggerSourceStrings);
         mTriggerSourceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);     //设置下拉列表框的下拉选项样式
         Spinner mTriggerSourceSpinner = findViewById(R.id.trigger_source_spinner);
         mTriggerSourceSpinner.setAdapter(mTriggerSourceAdapter);
@@ -161,7 +173,7 @@ public class MainActivity extends AppCompatActivity
         mTriggerSourceSpinner.setOnItemSelectedListener(spinnerSelectedListener);
 
         String[] mTriggerStyleStrings = mResources.getStringArray(R.array.Trigger_Style_Strings);
-        ArrayAdapter<String> mTriggerStyleAdapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mTriggerStyleStrings);
+        ArrayAdapter<String> mTriggerStyleAdapter= new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mTriggerStyleStrings);
         mTriggerStyleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);     //设置下拉列表框的下拉选项样式
         Spinner mTriggerStyleSpinner = findViewById(R.id.trigger_style_spinner);
         mTriggerStyleSpinner.setAdapter(mTriggerStyleAdapter);
@@ -174,7 +186,7 @@ public class MainActivity extends AppCompatActivity
         mTriggerLevelEdit.setOnEditSpinnerActionListener(editSpinnerActionListener);
 
         String[] mTriggerSensitivityStrings = mResources.getStringArray(R.array.Trigger_Sensitivity_Strings);
-        ArrayAdapter<String> mTriggerSensitivityAdapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mTriggerSensitivityStrings);
+        ArrayAdapter<String> mTriggerSensitivityAdapter= new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mTriggerSensitivityStrings);
         mTriggerSensitivityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);     //设置下拉列表框的下拉选项样式
         Spinner mTriggerSensitivitySpinner = findViewById(R.id.trigger_Sensitivity_spinner);
         mTriggerSensitivitySpinner.setAdapter(mTriggerSensitivityAdapter);
@@ -192,10 +204,57 @@ public class MainActivity extends AppCompatActivity
                 cardWave.SetTriggerForce();
         });
 
+        //Meter
+        Switch mMeterSwitch = findViewById(R.id.meter_switch);
+        mMeterSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(meterWave!=null)
+            {
+                if(buttonView.isChecked())
+                    meterWave.SetPower(0, true);
+                else
+                    meterWave.SetPower(0, false);
+            }
+        });
+
+        Button mMeterVDcBtn = findViewById(R.id.meter_btn_vdc);
+        mMeterVDcBtn.setOnClickListener(meterClickChangeListener);
+
+        Button mMetermVDcBtn = findViewById(R.id.meter_btn_mvdc);
+        mMetermVDcBtn.setOnClickListener(meterClickChangeListener);
+
+        Button mMeterOmBtn = findViewById(R.id.meter_btn_om);
+        mMeterOmBtn.setOnClickListener(meterClickChangeListener);
+
+        Button mMeterVAcBtn = findViewById(R.id.meter_btn_vac);
+        mMeterVAcBtn.setOnClickListener(meterClickChangeListener);
+
+        Button mMetermVAcBtn = findViewById(R.id.meter_btn_mvac);
+        mMetermVAcBtn.setOnClickListener(meterClickChangeListener);
+
+        Button mMeterCapBtn = findViewById(R.id.meter_btn_cap);
+        mMeterCapBtn.setOnClickListener(meterClickChangeListener);
+
+        Button mMeterADcBtn = findViewById(R.id.meter_btn_adc);
+        mMeterADcBtn.setOnClickListener(meterClickChangeListener);
+
+        Button mMetermADcBtn = findViewById(R.id.meter_btn_madc);
+        mMetermADcBtn.setOnClickListener(meterClickChangeListener);
+
+        Button mMeterEjgBtn = findViewById(R.id.meter_btn_ejg);
+        mMeterEjgBtn.setOnClickListener(meterClickChangeListener);
+
+        Button mMeterAAcBtn = findViewById(R.id.meter_btn_aac);
+        mMeterAAcBtn.setOnClickListener(meterClickChangeListener);
+
+        Button mMetermAAcBtn = findViewById(R.id.meter_btn_maac);
+        mMetermAAcBtn.setOnClickListener(meterClickChangeListener);
+
+        Button mMeterTdBtn = findViewById(R.id.meter_btn_td);
+        mMeterTdBtn.setOnClickListener(meterClickChangeListener);
 
         AddInfo(R.string.PleaseConnectUsb);
 
-        usbManger = new UsbDevMng(this, this);
+        usbManger = new UsbDevMng(this);
         usbManger.intiDetect(this);
     }
 
@@ -227,6 +286,10 @@ public class MainActivity extends AppCompatActivity
                 ddsWave = OscDdsFactory.CreateDDSWave(dev);
             }
 
+            if(dev.IsSupportMultMeter()){
+                meterWave = OscDdsFactory.CreatFS9922MultMeterUsbWave(this, dev);
+            }
+
             try {
                 Thread.sleep(1000);
 
@@ -254,8 +317,18 @@ public class MainActivity extends AppCompatActivity
                 }
             });
         }
-        else if (state == UsbDevMng.DEVICE_DETECT_STATE.NEED_PERMISSION) {
+        else if (state == UsbDevMng.DEVICE_DETECT_STATE.NEED_USR_PERMISSION) {
             ShowToastNoUi(R.string.The_Device_Need_Permission, Toast.LENGTH_SHORT);
+        }
+        else if (state == UsbDevMng.DEVICE_DETECT_STATE.NEED_RSCAN) {
+            //有一些系统，授权以后，广播信息获取会失败，手动重新扫描设备，并连接
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "scanDevice ...");
+                    usbManger.scanDevice(getApplicationContext(), false);
+                }
+            }, 5000); // 5000 毫秒 = 5 秒
         }
     }
 
@@ -288,7 +361,7 @@ public class MainActivity extends AppCompatActivity
 
         cardWave.SetRangeV((byte)0, m_osc_range_minv, m_osc_range_maxv);
         cardWave.SetRangeV((byte)1, m_osc_range_minv, m_osc_range_maxv);
-        if(cardWave.GetChannelNum()==4)
+        if(cardWave.GetOscChannelNum()==4)
         {
             cardWave.SetRangeV((byte)2, m_osc_range_minv, m_osc_range_maxv);
             cardWave.SetRangeV((byte)3, m_osc_range_minv, m_osc_range_maxv);
@@ -297,7 +370,7 @@ public class MainActivity extends AppCompatActivity
         //采样率
         int sampleNum = cardWave.GetSamplesNum();
         String[] sampleStrings = new String[sampleNum];
-        int samples[] = new int[sampleNum];
+        int[] samples = new int[sampleNum];
         if(cardWave.GetSamples(samples, sampleNum)>0)
         {
             for(int k=0; k<sampleNum; k++)
@@ -375,7 +448,7 @@ public class MainActivity extends AppCompatActivity
             TextView textView = findViewById(R.id.text_info);
             textView.setText(mUsbInfos);
 
-            if(cardWave.GetChannelNum()==4) {
+            if(cardWave.GetOscChannelNum()==4) {
                 mScopeView.AddLine(ComDefs.chn1_name, 2, mResources.getColor(R.color.colorPrintCh1));
                 mScopeView.AddLine(ComDefs.chn2_name, 4, mResources.getColor(R.color.colorPrintCh2));
                 mScopeView.AddLine(ComDefs.chn3_name, 6, mResources.getColor(R.color.colorPrintCh3));
@@ -435,7 +508,7 @@ public class MainActivity extends AppCompatActivity
             //采集
             //m_capture_length 以KB为单位 1==1024 10=10240
             //ch1==0x01 ch2==0x02 ch1+ch2==0x03 ch1+ch2+ch3==0x07 ch1+ch2+ch3+ch4==0x0F
-            m_read_length = cardWave.Capture(m_capture_length / 1024, (cardWave.GetChannelNum() == 4)? (short)0x0F:(short)0x03, (byte) 0);
+            m_read_length = cardWave.Capture(m_capture_length / 1024, (cardWave.GetOscChannelNum() == 4)? (short)0x0F:(short)0x03, (byte) 0);
             //m_read_length = cardWave.Capture(m_capture_length / 1024,(short)0x07, (byte) 0);
             m_read_length *= 1024;  //转换成长度
         }
@@ -463,7 +536,7 @@ public class MainActivity extends AppCompatActivity
             int m_trigger_point = cardWave.ReadVoltageDatasTriggerPoint();
             AddInfo(String.format("%s Length %d TrigggerPoint %d\n", mResources.getString(R.string.CaptureCompleteReadDatas), m_read_length, m_trigger_point));
 
-            for(int chn=0; chn < cardWave.GetChannelNum(); chn++) {
+            for(int chn=0; chn < cardWave.GetOscChannelNum(); chn++) {
                 int m_length = cardWave.ReadVoltageDatas((byte) chn, m_buffer, m_read_length);
 
                 double min, max;
@@ -473,7 +546,12 @@ public class MainActivity extends AppCompatActivity
                     max = Math.max(max, m_buffer[i]);
                 }
 
-                if (++m_count % 10 == 0) {
+                pareCal.UpdateDatas(m_buffer, m_read_length, cardWave.GetVoltageResolution((byte)chn), cardWave.GetSample());
+                FreqValue f = pareCal.GetFreq();
+                PhaseValue min_p = pareCal.GetMinPhase();
+                PhaseValue max_p = pareCal.GetMaxPhase();
+
+                if (m_count % 10 == 0) {
                     mUsbInfos = "";
 
                     SimpleDateFormat formatter = new SimpleDateFormat ("yyyy年MM月dd日 HH:mm:ss ");
@@ -481,7 +559,11 @@ public class MainActivity extends AppCompatActivity
                     String str = formatter.format(curDate);
                     AddInfo(str + "count " + m_count + "\n");
                 }
-                String tmp = String.format("channel %d min = %.3f max = %.3f vpp = %.3f\n", chn, min, max, max - min);
+                String tmp = String.format("channel %d min = %.3f max = %.3f vpp = %.3f ", chn, min, max, max - min);
+                if(f.m_full_cycle)
+                    tmp = tmp + String.format("f = %.3f   p = %.1f %.1f   %.1f\n", f.m_freq, min_p.m_phase, max_p.m_phase, max_p.m_phase-min_p.m_phase);
+                else
+                    tmp = tmp + String.format("f = *** p = ***\n");
                 AddInfo(tmp);
 
                 if(chn==0)
@@ -496,32 +578,34 @@ public class MainActivity extends AppCompatActivity
                 mScopeView.Redraw();
             }
 
+            m_count++;
+
             //采集
             if(m_osc_capturing)
                 NextCapture();
         }
     }
 
-    public static ComDefs.BOXING_STYLE name2boxing(Context context, String name)
+    public static ComDefs.WAVE_STYLE name2boxing(Context context, String name)
     {
-        ComDefs.BOXING_STYLE style = ComDefs.BOXING_STYLE.W_SINE;
+        ComDefs.WAVE_STYLE style = ComDefs.WAVE_STYLE.W_SINE;
         Resources mResources = context.getResources();
         if(name.equals(mResources.getString(R.string.Sine)))
-            style = ComDefs.BOXING_STYLE.W_SINE;
+            style = ComDefs.WAVE_STYLE.W_SINE;
         else if(name.equals(mResources.getString(R.string.Rectangle)))
-            style = ComDefs.BOXING_STYLE.W_SQUARE;
+            style = ComDefs.WAVE_STYLE.W_SQUARE;
         else if(name.equals(mResources.getString(R.string.Ramp)))
-            style = ComDefs.BOXING_STYLE.W_RAMP;
+            style = ComDefs.WAVE_STYLE.W_RAMP;
         else if(name.equals(mResources.getString(R.string.Pulse)))
-            style = ComDefs.BOXING_STYLE.W_PULSE;
+            style = ComDefs.WAVE_STYLE.W_PULSE;
         else if(name.equals(mResources.getString(R.string.Pulse)))
-            style = ComDefs.BOXING_STYLE.W_PULSE;
+            style = ComDefs.WAVE_STYLE.W_PULSE;
         else if(name.equals(mResources.getString(R.string.White_Noise)))
-            style = ComDefs.BOXING_STYLE.W_NOISE;
+            style = ComDefs.WAVE_STYLE.W_NOISE;
         else if(name.equals(mResources.getString(R.string.DC)))
-            style = ComDefs.BOXING_STYLE.W_DC;
+            style = ComDefs.WAVE_STYLE.W_DC;
         else if(name.equals(mResources.getString(R.string.Arb)))
-            style = ComDefs.BOXING_STYLE.W_ARB;
+            style = ComDefs.WAVE_STYLE.W_ARB;
         return style;
     }
 
@@ -562,7 +646,7 @@ public class MainActivity extends AppCompatActivity
 
     void updateDdsCtrls() {
         ComDefs.DDS_OUT_MODE mode = null;
-        ComDefs.BOXING_STYLE bx_style = null;
+        ComDefs.WAVE_STYLE bx_style = null;
         if(ddsWave!=null)
             mode = ddsWave.GetOutMode(0);
         else{
@@ -585,10 +669,10 @@ public class MainActivity extends AppCompatActivity
 
         //幅度
         TextView vppView = (TextView) findViewById(R.id.dds_vpp_textView);
-        vppView.setVisibility(bx_style != ComDefs.BOXING_STYLE.W_DC? View.VISIBLE : View.GONE);
+        vppView.setVisibility(bx_style != ComDefs.WAVE_STYLE.W_DC? View.VISIBLE : View.GONE);
 
         EditSpinnerVolt mDdsVppEdit = (EditSpinnerVolt) findViewById(R.id.dds_vpp_Number);
-        mDdsVppEdit.setVisibility(bx_style != ComDefs.BOXING_STYLE.W_DC? View.VISIBLE : View.GONE);
+        mDdsVppEdit.setVisibility(bx_style != ComDefs.WAVE_STYLE.W_DC? View.VISIBLE : View.GONE);
         mDdsVppEdit.SetValueRange(0, amp);
         mDdsVppEdit.SetValue(m_dds_vpp);
 
@@ -603,8 +687,8 @@ public class MainActivity extends AppCompatActivity
         double freq = ddsWave!=null? ddsWave.GetPinlv(0) : 1000;
         TextView freqView = (TextView) findViewById(R.id.dds_freq_textView);
         int visibility = ((mode == ComDefs.DDS_OUT_MODE.SWEEP) ||
-                (bx_style == ComDefs.BOXING_STYLE.W_DC) ||
-                (bx_style == ComDefs.BOXING_STYLE.W_NOISE)) ? View.GONE : View.VISIBLE;
+                (bx_style == ComDefs.WAVE_STYLE.W_DC) ||
+                (bx_style == ComDefs.WAVE_STYLE.W_NOISE)) ? View.GONE : View.VISIBLE;
         freqView.setVisibility(visibility);
 
         EditSpinnerFreq freqNumber = (EditSpinnerFreq) findViewById(R.id.dds_freq_Number);
@@ -627,7 +711,7 @@ public class MainActivity extends AppCompatActivity
                 updateDdsCtrls();
             } else if (parentId == R.id.dds_wave_spinner) {
                 if (ddsWave != null){
-                    ComDefs.BOXING_STYLE bx_style = name2boxing(getApplicationContext(), parent.getItemAtPosition(position).toString());
+                    ComDefs.WAVE_STYLE bx_style = name2boxing(getApplicationContext(), parent.getItemAtPosition(position).toString());
                     ddsWave.SetBoxing(0, bx_style);
                 }
                 updateDdsCtrls();
@@ -708,7 +792,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     cardWave.SetRangeV((byte)0, m_osc_range_minv, m_osc_range_maxv);
                     cardWave.SetRangeV((byte)1, m_osc_range_minv, m_osc_range_maxv);
-                    if(cardWave.GetChannelNum()==4)
+                    if(cardWave.GetOscChannelNum()==4)
                     {
                         cardWave.SetRangeV((byte)2, m_osc_range_minv, m_osc_range_maxv);
                         cardWave.SetRangeV((byte)3, m_osc_range_minv, m_osc_range_maxv);
@@ -722,7 +806,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     cardWave.SetRangeV((byte)0, m_osc_range_minv, m_osc_range_maxv);
                     cardWave.SetRangeV((byte)1, m_osc_range_minv, m_osc_range_maxv);
-                    if(cardWave.GetChannelNum()==4)
+                    if(cardWave.GetOscChannelNum()==4)
                     {
                         cardWave.SetRangeV((byte)2, m_osc_range_minv, m_osc_range_maxv);
                         cardWave.SetRangeV((byte)3, m_osc_range_minv, m_osc_range_maxv);
@@ -762,7 +846,7 @@ public class MainActivity extends AppCompatActivity
                 if(cardWave!=null)
                 {
                     int sampleNum = cardWave.GetSamplesNum();
-                    int samples[] = new int[sampleNum];
+                    int[] samples= new int[sampleNum];
                     if(cardWave.GetSamples(samples, sampleNum)>0)
                         cardWave.SetSample(samples[pos]);
                 }
@@ -787,4 +871,67 @@ public class MainActivity extends AppCompatActivity
             }
         }
     };
+
+    View.OnClickListener meterClickChangeListener = new View.OnClickListener(){
+
+        @Override
+        public void onClick(View view) {
+            int id = view.getId();
+            if(id == R.id.meter_btn_vdc) {
+                if(meterWave!=null)
+                    meterWave.Set_DC_V();
+            }
+            else if(id == R.id.meter_btn_mvdc) {
+                if(meterWave!=null)
+                    meterWave.Set_DCAC_mV(false);
+            }
+            else if(id == R.id.meter_btn_om) {
+                if(meterWave!=null)
+                    meterWave.Set_0m2(false);
+            }
+            else if(id == R.id.meter_btn_vac) {
+                if(meterWave!=null)
+                    meterWave.Set_AC_V();
+            }
+            else if(id == R.id.meter_btn_mvac) {
+                if(meterWave!=null)
+                    meterWave.Set_DCAC_mV(true);
+            }
+            else if(id == R.id.meter_btn_cap) {
+                if(meterWave!=null)
+                    meterWave.Set_C();
+            }
+            else if(id == R.id.meter_btn_adc) {
+                if(meterWave!=null)
+                    meterWave.Set_DCAC_A(false);
+            }
+            else if(id == R.id.meter_btn_madc) {
+                if(meterWave!=null)
+                    meterWave.Set_DCAC_mV(false);
+            }
+            else if(id == R.id.meter_btn_ejg) {
+                if(meterWave!=null)
+                    meterWave.Set_Diode_Beerer(true);
+            }
+            else if(id == R.id.meter_btn_aac) {
+                if(meterWave!=null)
+                    meterWave.Set_DCAC_A(true);
+            }
+            else if(id == R.id.meter_btn_maac) {
+                if(meterWave!=null)
+                    meterWave.Set_DCAC_mV(true);
+            }
+            else if(id == R.id.meter_btn_td) {
+                if(meterWave!=null)
+                    meterWave.Set_0Om_Beerer(true);
+            }
+        }
+    };
+
+    public boolean MeterUpdateCallBack(double text_value, String text, String top, String bottom, boolean is_bar, boolean bar_sign, int bar_value)
+    {
+        mMeterView.UpdateDatas(text_value, text, top, bottom, is_bar, bar_sign, bar_value);
+        mMeterView.Redraw();
+        return true;
+    }
 }

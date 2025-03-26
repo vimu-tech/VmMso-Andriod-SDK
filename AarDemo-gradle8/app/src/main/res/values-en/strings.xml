@@ -96,4 +96,8 @@
     <string name="Single">Single</string>
 
     <string name="TriggerFroce">Trigger Force</string>
+
+    <string name="Capacitance">C</string>
+    <string name="Diode">Diode</string>
+    <string name="On_Off">On/Off</string>
 </resources>

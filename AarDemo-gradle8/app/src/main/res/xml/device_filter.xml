@@ -3,4 +3,8 @@
     <usb-device
         vendor-id="54434"
         product-id="22114" />
+
+    <usb-device
+        vendor-id="54434"
+        product-id="22115" />
 </resources>

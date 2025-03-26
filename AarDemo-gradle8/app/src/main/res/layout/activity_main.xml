@@ -124,6 +124,126 @@
                     android:layout_weight="1.0" />
             </LinearLayout>
 
+            <com.vimu.aardemo.MeterView
+                android:id="@+id/meterView"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="#000" />
+
+            <Switch
+                android:id="@+id/meter_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Multimeter" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/meter_btn_vdc"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="V(DC)" />
+
+                <Button
+                    android:id="@+id/meter_btn_mvdc"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="mV(DC)" />
+
+                <Button
+                    android:id="@+id/meter_btn_om"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="Ω" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/meter_btn_vac"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="V(AC)" />
+
+                <Button
+                    android:id="@+id/meter_btn_mvac"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="mV(AC)" />
+
+                <Button
+                    android:id="@+id/meter_btn_cap"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Capacitance" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/meter_btn_adc"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="A(DC)" />
+
+                <Button
+                    android:id="@+id/meter_btn_madc"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="mA(DC)" />
+
+                <Button
+                    android:id="@+id/meter_btn_ejg"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Diode" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/meter_btn_aac"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="A(AC)" />
+
+                <Button
+                    android:id="@+id/meter_btn_maac"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="mA(AC)" />
+
+                <Button
+                    android:id="@+id/meter_btn_td"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.0"
+                    android:layout_height="wrap_content"
+                    android:text="@string/On_Off" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout

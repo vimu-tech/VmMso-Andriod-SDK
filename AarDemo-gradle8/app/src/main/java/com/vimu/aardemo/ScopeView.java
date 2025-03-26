@@ -1,8 +1,6 @@
 package com.vimu.aardemo;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -12,11 +10,6 @@ import android.graphics.drawable.shapes.PathShape;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.vimu.msolibrary.ComDefs;
-import com.vimu.msolibrary.usb.TriggerInfo;
 
 import java.util.LinkedList;
 
@@ -177,7 +170,7 @@ public class ScopeView extends View {
         mIsLayout = true;
     }
 
-    public boolean isLayout(){return mIsLayout;};
+    public boolean isLayout(){return mIsLayout;}
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {

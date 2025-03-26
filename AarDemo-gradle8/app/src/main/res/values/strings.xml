@@ -96,4 +96,8 @@
     <string name="Single">单次</string>
 
     <string name="TriggerFroce">强制触发</string>
+
+    <string name="Capacitance">电容</string>
+    <string name="Diode">二极管</string>
+    <string name="On_Off">通断</string>
 </resources>
